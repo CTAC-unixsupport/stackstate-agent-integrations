@@ -12,19 +12,26 @@ def sts_environment():
     If you want to run an environment this object can not be empty.
     """
     return {
-        "url": "https://dev102222.service-now.com",
-        "user": "admin",
-        "password": "Stackstate@123",
-        "batch_size": 100
+        "url": "https://instance.service-now.com",
+        "user": "some_user",
+        "password": "secret",
+        "batch_size": 100,
+        "include_resource_types": [
+            "cmdb_ci_netgear",
+            "cmdb_ci_win_cluster",
+            "cmdb_ci_win_cluster_node",
+            "cmdb_ci_app_server_java"
+        ]
     }
 
 
 @pytest.fixture(scope="class")
 def instance(request):
     cfg = {
-        "url": "https://dev60476.service-now.com",
-        "user": "admin",
-        "password": "Service @ 123",
-        "batch_size": 100
+        "url": "https://instance.service-now.com",
+        "user": "some_user",
+        "password": "secret",
+        "batch_size": 100,
+        "include_resource_types": ["cmdb_ci_netgear", "cmdb_ci_cluster", "cmdb_ci_app_server"]
     }
     request.cls.instance = cfg

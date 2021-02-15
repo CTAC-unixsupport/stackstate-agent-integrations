@@ -70,7 +70,7 @@ clear-win-caches:
 .linux_test: &linux_test
   <<: *linux_env
   stage: test
-  dependencies:
+  needs:
     - linux_deps
   services:
     - name: docker:19.03.5-dind
@@ -106,11 +106,22 @@ test_stackstate_checks_dev:
     PYTHON3: "true"
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  tags:
+    - sts-k8s-xl-no-docker-runner
 
 test_kubernetes:
   <<: *linux_test
   variables:
     CHECK: "kubernetes"
+    PYTHON3: "true"
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+
+test_dynatrace_topology:
+  <<: *linux_test
+  variables:
+    CHECK: "dynatrace_topology"
     PYTHON3: "true"
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
@@ -138,6 +149,17 @@ test_mysql:
     PYTHON3: "true"
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  tags:
+    - sts-aws
+
+test_openmetrics:
+  <<: *linux_test
+  variables:
+    CHECK: "openmetrics"
+    PYTHON3: "true"
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
 
 test_postgres:
   <<: *linux_test
@@ -146,6 +168,9 @@ test_postgres:
     PYTHON3: "true"
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  tags:
+    - sts-k8s-xl-no-docker-runner
 
 test_cloudera:
   <<: *linux_test
@@ -167,6 +192,14 @@ test_sap:
   <<: *linux_test
   variables:
     CHECK: "sap"
+    PYTHON3: "true"
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+
+test_agent_integration_sample:
+  <<: *linux_test
+  variables:
+    CHECK: "agent_integration_sample"
     PYTHON3: "true"
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
@@ -203,10 +236,19 @@ test_static_topology:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
 
+test_nagios:
+  <<: *linux_test
+  variables:
+    CHECK: "nagios"
+    PYTHON3: "true"
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+
+
 .windows_test: &windows_test
   <<: *windows_env
   stage: test
-  dependencies:
+  needs:
     - win_deps
   script:
     - checksdev test -c %CHECK%
